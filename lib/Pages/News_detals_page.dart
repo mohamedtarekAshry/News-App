@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, must_be_immutable
 
 import 'dart:ui';
 
@@ -6,8 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class NewsDetailsPage extends StatelessWidget {
-  const NewsDetailsPage({super.key});
-
+  const NewsDetailsPage(
+      {super.key,
+      required this.author,
+      required this.content,
+      required this.deta,
+      required this.image,
+      required this.title});
+  final String content;
+  final String image;
+  final String author;
+  final String deta;
+  final String title;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,10 +29,9 @@ class NewsDetailsPage extends StatelessWidget {
             Container(
               height: MediaQuery.of(context).size.height * 0.6,
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("assets/images/1660643.webp"),
-                    fit: BoxFit.cover),
+                    image: NetworkImage(image), fit: BoxFit.cover),
               ),
             ),
             Align(
@@ -43,12 +52,11 @@ class NewsDetailsPage extends StatelessWidget {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.1,
                       ),
-                      const Expanded(
+                      Expanded(
                         child: SingleChildScrollView(
                             child: Column(
                           children: [
-                            Text(
-                                "LONDON — Cryptocurrencies “have no intrinsic value” and people who invest in them should be prepared to lose all their money, Bank of England Governor Andrew Bailey said.Digital currencies like bitcoin, ether and even dogecoin have been on a tear this year, reminding some investors of the 2017 crypto bubble in which bitcoin blasted toward 20,000, only to sink as low as 3,122 a year later.Asked at a press conference Thursday about the rising value of cryptocurrencies, Bailey said: “They have no intrinsic value. That doesn’t mean to say people don’t put value on them, because they can have extrinsic value. But they have no intrinsic value.”“I’m going to say this very bluntly again,” he added. “Buy them only if you’re prepared to lose all your money.”Bailey’s comments echoed a similar warning from the U.K.’s Financial Conduct Authority.“Investing in cryptoassets, or investments and lending linked to them, generally involves taking very high risks with investors’ money,” the financial services watchdog said in January.“If consumers invest in these types of product, they should be prepared to lose all their money.”Bailey, who was formerly the chief executive of the FCA, has long been a skeptic of crypto. In 2017, he warned: “If you want to invest in bitcoin, be prepared to lose all your money.”"),
+                            Text(content),
                           ],
                         )),
                       ),
@@ -74,32 +82,32 @@ class NewsDetailsPage extends StatelessWidget {
                       color: const Color.fromRGBO(245, 245, 245, 0.50),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Sunday, 9 May 2021",
-                          style: TextStyle(
+                          deta,
+                          style: const TextStyle(
                             fontFamily: "Nunito",
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: Colors.black,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Text(
-                          "Crypto investors should be prepared to lose all their money, BOE governor says",
-                          style: TextStyle(
+                          title,
+                          style: const TextStyle(
                             fontFamily: "Nunito",
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Colors.black,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Text(
-                          "Published by Ryan Browne",
-                          style: TextStyle(
+                          author,
+                          style: const TextStyle(
                             fontFamily: "Nunito",
                             fontSize: 10,
                             fontWeight: FontWeight.w800,

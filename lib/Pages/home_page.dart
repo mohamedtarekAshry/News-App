@@ -1,5 +1,9 @@
+// ignore_for_file: unnecessary_null_comparison, prefer_if_null_operators
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:news_app/Data/Cubit/cubit/all_news_cubit.dart';
 import 'package:news_app/Pages/News_detals_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -56,6 +60,14 @@ class HomePage extends StatelessWidget {
               ),
             ),
             Padding(
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<AllNewsCubit>().getAllNews();
+                  },
+                  child: const Text("Get News"),
+                )),
+            Padding(
               padding: const EdgeInsets.all(15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -91,64 +103,131 @@ class HomePage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) => InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NewsDetailsPage(),
+              child: BlocBuilder<AllNewsCubit, AllNewsState>(
+                builder: (context, state) {
+                  if (state is AllNewsInitial) {
+                    return const Center(
+                      child: Text('Press the above to get news'),
+                    );
+                  } else if (state is AllNewsLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is AllNewsSuccess) {
+                    return ListView.builder(
+                      itemCount: state.ourResponse.articles!.length,
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NewsDetailsPage(
+                                image: state.ourResponse.articles![index]
+                                            .urlToImage ==
+                                        null
+                                    ? "https://th.bing.com/th/id/OIP.eqAifC8QFEN9ccPaVVNNsQHaEK?pid=ImgDet&rs=1"
+                                    : state.ourResponse.articles![index]
+                                        .urlToImage!,
+                                deta: state.ourResponse.articles![index]
+                                            .publishedAt! ==
+                                        null
+                                    ? ''
+                                    : state.ourResponse.articles![index]
+                                        .publishedAt!,
+                                title: state.ourResponse.articles![index]
+                                            .title! ==
+                                        null
+                                    ? ''
+                                    : state.ourResponse.articles![index].title!,
+                                author:
+                                    state.ourResponse.articles![index].author ==
+                                            null
+                                        ? ''
+                                        : state.ourResponse.articles![index]
+                                            .author!,
+                                content: state.ourResponse.articles![index]
+                                            .content! ==
+                                        null
+                                    ? ''
+                                    : state
+                                        .ourResponse.articles![index].content!,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(15),
+                          padding: const EdgeInsets.all(15),
+                          height:
+                              MediaQuery.of(context).size.height * 240 / 812,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                  state.ourResponse.articles![index]
+                                              .urlToImage ==
+                                          null
+                                      ? "https://th.bing.com/th/id/OIP.eqAifC8QFEN9ccPaVVNNsQHaEK?pid=ImgDet&rs=1"
+                                      : state.ourResponse.articles![index]
+                                          .urlToImage!,
+                                ),
+                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Spacer(),
+                              Text(
+                                state.ourResponse.articles![index].author ==
+                                        null
+                                    ? ''
+                                    : state
+                                        .ourResponse.articles![index].author!,
+                                style: const TextStyle(
+                                  fontFamily: "Nunito",
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                state.ourResponse.articles![index].title == null
+                                    ? ''
+                                    : state.ourResponse.articles![index].title!,
+                                style: const TextStyle(
+                                  fontFamily: "Nunito",
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                state.ourResponse.articles![index]
+                                            .description ==
+                                        null
+                                    ? ''
+                                    : state.ourResponse.articles![index]
+                                        .description!,
+                                style: const TextStyle(
+                                  fontFamily: "Nunito",
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w100,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(15),
-                    padding: const EdgeInsets.all(15),
-                    height: MediaQuery.of(context).size.height * 240 / 812,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: const DecorationImage(
-                          image: AssetImage("assets/images/1660643.webp"),
-                          fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Spacer(),
-                        Text(
-                          "by Ryan Browne",
-                          style: TextStyle(
-                            fontFamily: "Nunito",
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          "Crypto investors should be \n prepared to lose all their money,\n BOE governor says",
-                          style: TextStyle(
-                            fontFamily: "Nunito",
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          "“I’m going to say this very bluntly again,” he added. “Buy them \n only if you’re prepared to lose all your money.”",
-                          style: TextStyle(
-                            fontFamily: "Nunito",
-                            fontSize: 10,
-                            fontWeight: FontWeight.w100,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                  } else {
+                    return const Center(
+                      child: Text('Error'),
+                    );
+                  }
+                },
               ),
             ),
           ],
